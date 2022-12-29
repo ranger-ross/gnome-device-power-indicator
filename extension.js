@@ -51,10 +51,73 @@ function getDevices() {
     for (const device of deviceNames) {
         info(`Collecting data for device ${device}`);
 
+        const rawDeviceInfo = getDeviceInfo(device);
+        const deviceInfo = parseDeviceInfo(rawDeviceInfo);
+
+        info(`Device info => ${JSON.stringify(deviceInfo)}`)
+
         // TODO: Push device data to list
     }
 
     return devices;
+}
+
+function getDeviceInfo(device) {
+    return runCommand(`upower -i ${device}`);
+}
+
+function getPropertyValue(property) {
+    return property.substring(property.indexOf(':') + 1).trim();
+}
+
+/**
+ * Returns true of a line contains yes (for output of upower -d)
+ * 
+ * Example:
+ * mouse
+ *   present:             yes
+ *   rechargeable:        yes
+ */
+function isYes(property) {
+    return getPropertyValue(property).includes('yes');
+}
+
+function parseDeviceInfo(rawDeviceInfo) {
+    info(`Parsing device info ` + rawDeviceInfo);
+
+
+    const lines = rawDeviceInfo.split('\n');
+
+    let device = {
+        model: null,
+        rechargeable: null,
+        state: null,
+        percentage: null,
+        iconName: null,
+    };
+
+    for (const line of lines) {
+
+        if (!line || line === '' || !line.includes(':')) {
+            // non-property line, skip it
+            continue;
+        }
+
+        if (line.trim().startsWith('rechargeable')) {
+            device.rechargeable = isYes(line);
+        } else if (line.trim().startsWith('state')) {
+            device.state = getPropertyValue(line);
+        } else if (line.trim().startsWith('icon-name')) {
+            device.iconName = getPropertyValue(line);
+        } else if (line.trim().startsWith('percentage')) {
+            device.percentage = getPropertyValue(line);
+        } else if (line.trim().startsWith('model')) {
+            device.model = getPropertyValue(line);
+        }
+
+    }
+
+    return device;
 }
 
 function getDeviceNames() {
@@ -74,7 +137,7 @@ function runCommand(command) {
     }
 
     const output = utf8decoder.decode(new Uint8Array(out))
-    info(`${command} output => ${output}`);
+    //info(`${command} output => ${output}`);
 
     return output;
 }
