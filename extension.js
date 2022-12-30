@@ -7,23 +7,23 @@ const Me = ExtensionUtils.getCurrentExtension();
 const Logger = Me.imports.src.logger;
 const DeviceUtil = Me.imports.src.device;
 
-let panelButton;
+let container;
 
 let batteryCheckLoop = null;
 
-let panelButtonText = new St.Label({
-    text: "Hello World",
-    y_align: Clutter.ActorAlign.CENTER,
-});
+// Properties: icon, label
+let primaryDeviceSection = null;
 
 function init() {
     Logger.info('Init extension');
 
-    panelButton = new St.Bin({
-        style_class: "panel-button",
+    container = new Clutter.Actor({
+        layout_manager: new Clutter.BoxLayout({
+            spacing: 6,
+        })
     });
 
-    panelButton.set_child(panelButtonText);
+    primaryDeviceSection = addDeviceSection();
 }
 
 function enable() {
@@ -39,7 +39,7 @@ function enable() {
     });
 
     // Add the button to the panel
-    Main.panel._rightBox.insert_child_at_index(panelButton, 0);
+    Main.panel._rightBox.insert_child_at_index(container, 0);
 }
 
 function disable() {
@@ -47,7 +47,7 @@ function disable() {
     if (batteryCheckLoop) {
         Mainloop.source_remove(batteryCheckLoop);
     }
-    Main.panel._rightBox.remove_child(panelButton);
+    Main.panel._rightBox.remove_child(container);
 }
 
 /**
@@ -60,17 +60,46 @@ function updateDeviceLoop() {
     for (const device of devices) {
         if (device?.model == 'G703 LIGHTSPEED Wireless Gaming Mouse w/ HERO') {
             Logger.info(device.model + ' ' + device.percentage);
-
-            panelButtonText.text = device.model + ' ' + device.percentage;
+            primaryDeviceSection.deviceIcon.icon_name = deviceTypeToIconName(device.type);
+            primaryDeviceSection.label.text = device.percentage;
+            primaryDeviceSection.batteryIcon.icon_name = device.iconName;
         }
     }
 }
 
-function createBatteryIndicatorPanelSection() {
-    // Create a Button with "Hello World" text
-    panelButton = new St.Bin({
-        style_class: "panel-button",
+function deviceTypeToIconName(type) {
+    return { // TODO: Support 
+        'mouse': 'input-mouse-symbolic'
+    }[type];
+}
+
+function createDeviceSection() {
+    let deviceIcon = new St.Icon({
+        // icon_name: 'battery-empty-symbolic',
+        icon_name: 'input-mouse-symbolic',
+        icon_size: 18,
+        //style_class: 'system-status-icon',
     });
 
-    panelButton.set_child(panelButtonText);
+
+    let label = new St.Label({
+        text: "",
+        y_align: Clutter.ActorAlign.CENTER,
+    });
+
+    let batteryIcon = new St.Icon({
+        // icon_name: 'battery-empty-symbolic',
+        icon_name: 'input-mouse-symbolic',
+        icon_size: 18,
+        //style_class: 'system-status-icon',
+    });
+
+    return { label, batteryIcon, deviceIcon };
+}
+function addDeviceSection() {
+    const { label, batteryIcon, deviceIcon } = createDeviceSection();
+    container.add_child(deviceIcon);
+    container.add_child(label);
+    //container.add_child(batteryIcon);
+    return { label, batteryIcon, deviceIcon };
 }

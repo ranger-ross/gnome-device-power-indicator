@@ -83,7 +83,7 @@ function parseDeviceInfo(rawDeviceInfo) {
         } else if (line.trim().startsWith('state')) {
             device.state = getPropertyValue(line);
         } else if (line.trim().startsWith('icon-name')) {
-            device.iconName = getPropertyValue(line);
+            device.iconName = getPropertyValue(line).replaceAll("'", "");
         } else if (line.trim().startsWith('percentage')) {
             device.percentage = getPropertyValue(line);
         } else if (line.trim().startsWith('model')) {
