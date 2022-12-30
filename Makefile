@@ -3,4 +3,4 @@ help: ## Shows help
 
 build: ## Builds and packages the extension to be submitted
 	rm -rf device-power-indicator@ranger-ross.github.io.zip
-	zip  -r device-power-indicator@ranger-ross.github.io.zip . -x ".git/*"
+	zip  -r device-power-indicator@ranger-ross.github.io.zip . -x ".git/*" -x Makefile -x .gitignore -x src/types.js -x readme-images/*

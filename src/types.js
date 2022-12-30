@@ -1,3 +1,5 @@
+// WARNING: this file is not included in the final bundle. Do not add any Javascript code that is not a JS Doc
+
 /**
  * @typedef {Object} Device
  * @property {string} model - The model name
