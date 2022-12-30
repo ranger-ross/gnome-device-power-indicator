@@ -56,10 +56,13 @@ function disable() {
  */
 function updateDeviceLoop() {
     Logger.info('Checking devices');
-    const devices = DeviceUtil.getDevices();
+    DeviceUtil.getDevices()
+        .then(devices => {
+            addMouseDevice(devices);
+            addKeyboardDevice(devices);
+        })
+        .catch(error => Logger.error(error));
 
-    addMouseDevice(devices);
-    addKeyboardDevice(devices);
 }
 
 function addMouseDevice(devices) {
