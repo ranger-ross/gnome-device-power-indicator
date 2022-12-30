@@ -68,7 +68,7 @@ function parseDeviceInfo(rawDeviceInfo) {
         }
 
         // TODO: Support other types like keyboard: https://upower.freedesktop.org/docs/Device.html
-        if (['unknown', 'mouse'].includes(line.trim())) {
+        if (['unknown', 'mouse', 'keyboard'].includes(line.trim())) {
             device.type = line.trim();
             continue;
         }
@@ -111,8 +111,5 @@ function runCommand(command) {
         return null;
     }
 
-    const output = utf8decoder.decode(new Uint8Array(out))
-    //Logger.info(`${command} output => ${output}`);
-
-    return output;
+    return utf8decoder.decode(new Uint8Array(out))
 }

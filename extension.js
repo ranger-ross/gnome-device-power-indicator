@@ -12,7 +12,8 @@ let container;
 let batteryCheckLoop = null;
 
 // Properties: icon, label
-let primaryDeviceSection = null;
+let mouseDeviceSection = createDeviceSection();
+let keyboardDeviceSection = createDeviceSection();
 
 function init() {
     Logger.info('Init extension');
@@ -23,7 +24,7 @@ function init() {
         })
     });
 
-    primaryDeviceSection = addDeviceSection();
+    //addDeviceSection(mouseDeviceSection);
 }
 
 function enable() {
@@ -56,37 +57,64 @@ function updateDeviceLoop() {
     Logger.info('Checking devices');
     const devices = DeviceUtil.getDevices();
 
-    for (const device of devices) {
-        if (device?.model == 'G703 LIGHTSPEED Wireless Gaming Mouse w/ HERO') {
-            Logger.info(device.model + ' ' + device.percentage);
-            primaryDeviceSection.deviceIcon.icon_name = deviceTypeToIconName(device.type);
-            primaryDeviceSection.label.text = device.percentage;
-        }
+    addMouseDevice(devices);
+    addKeyboardDevice(devices);
+}
+
+function addMouseDevice(devices) {
+    const mouseDevice = devices.find(device => device?.type == 'mouse');
+    if (mouseDevice) {
+        mouseDeviceSection.deviceIcon.icon_name = deviceTypeToIconName(mouseDevice.type);
+        mouseDeviceSection.label.text = mouseDevice.percentage;
+        addDeviceSection(mouseDeviceSection);
+    } else {
+        removeDeviceSection(mouseDeviceSection);
     }
 }
 
+function addKeyboardDevice(devices) {
+    const keyboardDevice = devices.find(device => device?.type == 'keyboard');
+    if (keyboardDevice) {
+        keyboardDeviceSection.deviceIcon.icon_name = deviceTypeToIconName(keyboardDevice.type);
+        keyboardDeviceSection.label.text = keyboardDevice.percentage;
+        addDeviceSection(keyboardDeviceSection);
+    } else {
+        removeDeviceSection(keyboardDeviceSection);
+    }
+}
+
+// Icons stored in /usr/share/icons
 function deviceTypeToIconName(type) {
-    return { // TODO: Support 
-        'mouse': 'input-mouse-symbolic'
+    return {
+        'mouse': 'input-mouse-symbolic',
+        'keyboard': 'input-keyboard-symbolic',
     }[type];
 }
 
 function createDeviceSection() {
-    let deviceIcon = new St.Icon({
+    const deviceIcon = new St.Icon({
         icon_name: 'input-mouse-symbolic',
         icon_size: 18,
     });
 
-    let label = new St.Label({
+    const label = new St.Label({
         text: "",
         y_align: Clutter.ActorAlign.CENTER,
     });
 
     return { label, deviceIcon };
 }
-function addDeviceSection() {
-    const { label, deviceIcon } = createDeviceSection();
-    container.add_child(deviceIcon);
-    container.add_child(label);
-    return { label, deviceIcon };
+
+function addDeviceSection(deviceSection) {
+    if (!container.contains(deviceSection.deviceIcon)) {
+        container.add_child(deviceSection.deviceIcon);
+    }
+    if (!container.contains(deviceSection.label)) {
+        container.add_child(deviceSection.label);
+    }
+}
+
+function removeDeviceSection(deviceSection) {
+    container.remove_child(deviceSection.deviceIcon);
+    container.remove_child(deviceSection.label);
 }

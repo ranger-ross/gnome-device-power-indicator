@@ -1,9 +1,8 @@
 {
-  "description":  "test",
-  "name": "example",
-  "url": "",
+  "name": "Device Power Indicator",
+  "description":  "Shows device power percentage for keyboards and mice",
+  "url": "https://github.com/ranger-ross/gnome-device-power-indicator",
   "shell-version": ["41", "42", "43"],
   "uuid": "ross@example.com",
   "version": 1
-
 }
