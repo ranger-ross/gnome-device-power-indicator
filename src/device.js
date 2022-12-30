@@ -57,11 +57,22 @@ function parseDeviceInfo(rawDeviceInfo) {
         state: null,
         percentage: null,
         iconName: null,
+        type: null,
     };
 
     for (const line of lines) {
 
-        if (!line || line === '' || !line.includes(':')) {
+        if (!line || line === '') {
+            // empty line
+            continue;
+        }
+
+        if (['unknown', 'mouse'].includes(line.trim())) {
+            device.type = line.trim();
+            continue;
+        }
+
+        if (!line.includes(':')) {
             // non-property line, skip it
             continue;
         }
