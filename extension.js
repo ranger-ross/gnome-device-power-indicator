@@ -19,7 +19,6 @@ let panelButtonText = new St.Label({
 function init() {
     Logger.info('Init extension');
 
-    // Create a Button with "Hello World" text
     panelButton = new St.Bin({
         style_class: "panel-button",
     });
@@ -67,3 +66,11 @@ function updateDeviceLoop() {
     }
 }
 
+function createBatteryIndicatorPanelSection() {
+    // Create a Button with "Hello World" text
+    panelButton = new St.Bin({
+        style_class: "panel-button",
+    });
+
+    panelButton.set_child(panelButtonText);
+}

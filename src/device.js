@@ -67,6 +67,7 @@ function parseDeviceInfo(rawDeviceInfo) {
             continue;
         }
 
+        // TODO: Support other types like keyboard: https://upower.freedesktop.org/docs/Device.html
         if (['unknown', 'mouse'].includes(line.trim())) {
             device.type = line.trim();
             continue;
