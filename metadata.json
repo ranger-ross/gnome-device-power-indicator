@@ -2,7 +2,7 @@
   "description":  "test",
   "name": "example",
   "url": "",
-  "shell-version": ["43.2"],
+  "shell-version": ["41", "42", "43"],
   "uuid": "ross@example.com",
   "version": 1
 

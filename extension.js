@@ -29,8 +29,7 @@ let panelButtonText = new St.Label({
 });
 
 function init() {
-
-    info('RossInit');
+    info('Init extension');
 
     // Create a Button with "Hello World" text
     panelButton = new St.Bin({
