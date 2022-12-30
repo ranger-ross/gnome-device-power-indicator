@@ -23,8 +23,6 @@ function init() {
             spacing: 6,
         })
     });
-
-    //addDeviceSection(mouseDeviceSection);
 }
 
 function enable() {
