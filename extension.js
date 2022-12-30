@@ -8,25 +8,26 @@ const Logger = Me.imports.src.logger;
 const DeviceUtil = Me.imports.src.device;
 
 let container;
-
 let batteryCheckLoop = null;
-
-// Properties: icon, label
-let mouseDeviceSection = createDeviceSection();
-let keyboardDeviceSection = createDeviceSection();
+let mouseDeviceSection = null;    // Properties: icon, label
+let keyboardDeviceSection = null; // Properties: icon, label
 
 function init() {
     Logger.info('Init extension');
+}
+
+function enable() {
+    Logger.info('Enabling extension');
 
     container = new Clutter.Actor({
         layout_manager: new Clutter.BoxLayout({
             spacing: 6,
         })
     });
-}
+    mouseDeviceSection = createDeviceSection();
+    keyboardDeviceSection = createDeviceSection();
 
-function enable() {
-    Logger.info('Enabling extension');
+    Main.panel._rightBox.insert_child_at_index(container, 0);
 
     batteryCheckLoop = Mainloop.timeout_add_seconds(2, () => {
         try {
@@ -37,7 +38,6 @@ function enable() {
         return true;
     });
 
-    Main.panel._rightBox.insert_child_at_index(container, 0);
 }
 
 function disable() {
@@ -46,6 +46,9 @@ function disable() {
         Mainloop.source_remove(batteryCheckLoop);
     }
     Main.panel._rightBox.remove_child(container);
+    container = null;
+    mouseDeviceSection = null;
+    keyboardDeviceSection = null;
 }
 
 /**
