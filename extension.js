@@ -38,7 +38,6 @@ function enable() {
         return true;
     });
 
-    // Add the button to the panel
     Main.panel._rightBox.insert_child_at_index(container, 0);
 }
 
@@ -62,7 +61,6 @@ function updateDeviceLoop() {
             Logger.info(device.model + ' ' + device.percentage);
             primaryDeviceSection.deviceIcon.icon_name = deviceTypeToIconName(device.type);
             primaryDeviceSection.label.text = device.percentage;
-            primaryDeviceSection.batteryIcon.icon_name = device.iconName;
         }
     }
 }
@@ -75,31 +73,20 @@ function deviceTypeToIconName(type) {
 
 function createDeviceSection() {
     let deviceIcon = new St.Icon({
-        // icon_name: 'battery-empty-symbolic',
         icon_name: 'input-mouse-symbolic',
         icon_size: 18,
-        //style_class: 'system-status-icon',
     });
-
 
     let label = new St.Label({
         text: "",
         y_align: Clutter.ActorAlign.CENTER,
     });
 
-    let batteryIcon = new St.Icon({
-        // icon_name: 'battery-empty-symbolic',
-        icon_name: 'input-mouse-symbolic',
-        icon_size: 18,
-        //style_class: 'system-status-icon',
-    });
-
-    return { label, batteryIcon, deviceIcon };
+    return { label, deviceIcon };
 }
 function addDeviceSection() {
-    const { label, batteryIcon, deviceIcon } = createDeviceSection();
+    const { label, deviceIcon } = createDeviceSection();
     container.add_child(deviceIcon);
     container.add_child(label);
-    //container.add_child(batteryIcon);
-    return { label, batteryIcon, deviceIcon };
+    return { label, deviceIcon };
 }
